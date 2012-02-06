@@ -4,33 +4,14 @@ Interactive command line utility to merge two tables based on text similarity of
 
 ## How it works
 
-	$ fuzzymatch kek-presse.tsv ivw-printauflagen.tsv out.json
-	Source table: kek-presse.tsv
+fuzzymatch uses the [Levenshtein](http://pypi.python.org/pypi/python-Levenshtein/) package to compute similarity between strings taken from two csv files. In ambiguous cases it will ask the user to chose among top-guesses.
+
+The resulting matches will be stored in a separate JSON file. You can cancel the merging process (ctrl-c) and proceed at the point you stopped later. If you run fuzzymatch on two csv files for the first time (which is when the json db doesn't exist) it will ask you which columns it should use for text matching.
+
+
+	$ fuzzymatch kek-presse.csv ivw-printauflagen.tsv out.json
+	Source table: kek-presse.csv
 	Target table: ivw-printauflagen.tsv
-	
-	Which column of the source table contains the ids?
-	   [0]: id
-	   [1]: name
-	
-	? 0
-	
-	Which column of the source table contains the text to be matched?
-	   [0]: id
-	   [1]: name
-	
-	? 1
-	
-	Which column of the target table contains the ids?
-	   [0]: IVW_Nummer
-	   [1]: Titelbezeichnung
-	
-	? 0
-	
-	Which column of the target table contains the text to be matched?
-	   [0]: IVW_Nummer
-	   [1]: Titelbezeichnung
-	
-	? 1
 	
 	Confirm possible match for Aachener Nachrichten
 	   [0]: --skip--
