@@ -61,7 +61,9 @@ def run(f_file, t_file, o_file):
 	for t_row in t_reader:
 		id = t_row[t_id_col]
 		txt = t_row[t_text_col]
-		t_map[id] = txt.strip()
+		if id not in t_map:
+			t_map[id] = []
+		t_map[id].append(txt.strip())
 		
 	for f_row in f_reader:
 		f_id = f_row[f_id_col]
@@ -72,7 +74,8 @@ def run(f_file, t_file, o_file):
 			
 		matches = []
 		for t_id in t_map:
-			matches.append(Result(t_id, t_map[t_id], Levenshtein.ratio(f_text.lower(), t_map[t_id].lower())))
+			for t_text in t_map[t_id]:
+				matches.append(Result(t_id, t_text, Levenshtein.ratio(f_text.lower(), t_text.lower())))
 		matches = sorted(matches, key=lambda r: r.score*-1)
 		
 		m = None
