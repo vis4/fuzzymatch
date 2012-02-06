@@ -45,32 +45,36 @@ def run(f_file, t_file, o_file):
 	for t_row in t_reader:
 		id = t_row[t_id_col]
 		txt = t_row[t_text_col]
-		t_map[id] = txt
+		t_map[id] = txt.strip()
 		
 	for f_row in f_reader:
 		f_id = f_row[f_id_col]
-		f_text = f_row[f_text_col]
-		if f_id in results['map']:
+		f_text = f_row[f_text_col].strip()
+		if f_id in results['map']:# and results['map'][f_id] is not None:
 			# already matched
 			continue
 			
 		matches = []
 		for t_id in t_map:
-			matches.append(Result(t_id, t_map[t_id], Levenshtein.ratio(f_text, t_map[t_id])))
+			matches.append(Result(t_id, t_map[t_id], Levenshtein.ratio(f_text.lower(), t_map[t_id].lower())))
 		matches = sorted(matches, key=lambda r: r.score*-1)
 		
 		m = None
 		if matches[0].score >= accept_score:
 			m = matches[0]
 		elif matches[0].score > ignore_score:
-			matches = ['--skip--'] + matches[:9]
-			m = prompt_select('Confirm possible match for %s' % f_text, matches, 0)
+			matches = ['--skip--'] + matches[:9] + ['--manual input--']
+			m = prompt_select('Confirm possible match for %s (%s)' % (f_text,f_id), matches, 0)
+			if m == '--manual input--':
+				m = prompt_text('Insert '+results['model']['t_id_col'])
 		
 		if m is not None:
 			if isinstance(m, Result):
 				results['map'][f_id] = m.id
 			elif m == '--skip--':
 				results['map'][f_id] = None
+			else:
+				results['map'][f_id] = m #manual inserted id
 			out = open(o_file, 'w')
 			out.write(json.dumps(results))
 			out.close()
