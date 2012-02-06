@@ -22,14 +22,15 @@ setup(
     author_email='gregor.aisch@okfn.org',
     url='http://labs.okfn.org',
     license='MIT',
-    packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+    packages=find_packages(exclude=['ez_setup', 'examples', 'tests','test.*']),
     namespace_packages=[],
     include_package_data=False,
     zip_safe=False,
-    install_requires=[
-    ],
+    install_requires=["python-Levenshtein"],
     tests_require=[],
-    entry_points=\
-    """
-""",
+    entry_points={
+        'console_scripts': [
+             'fuzzymatch = fuzzymatch:cli'
+        ]
+    }
 )

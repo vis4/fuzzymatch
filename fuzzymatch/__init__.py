@@ -7,6 +7,22 @@ import csvutil
 import unicodecsv as ucsv
 import Levenshtein
 
+def usage():
+	print "Usage:\n\nfuzzymatch source_table.csv merge_table.csv result.csv\n" 
+	exit(-1)
+
+
+def cli():
+	if len(sys.argv) < 4:
+		print "wrong argument count"
+		usage()
+ 
+	from_file = sys.argv[1]
+	to_file = sys.argv[2]
+	out_file = sys.argv[3]
+	run(from_file, to_file, out_file)
+	
+
 def run(f_file, t_file, o_file):
 	
 	f_dialect = csvutil.guess_dialect(f_file)
