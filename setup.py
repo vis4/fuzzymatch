@@ -1,7 +1,9 @@
 from setuptools import setup, find_packages
 
 long_desc = """
+fuzzymatch uses the Levenshtein package to compute similarity between strings taken from two csv files. In ambiguous cases it will ask the user to chose among top-guesses.
 
+The resulting matches will be stored in a separate JSON file. You can cancel the merging process (ctrl-c) and proceed at the point you stopped later. If you run fuzzymatch on two csv files for the first time (which is when the json db doesn't exist) it will ask you which columns it should use for text matching.
 """
 
 
