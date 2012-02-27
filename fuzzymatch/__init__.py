@@ -8,7 +8,7 @@ import unicodecsv as ucsv
 import Levenshtein
 
 def usage():
-	print "Usage:\n\nfuzzymatch source_table.csv merge_table.csv result.csv\n" 
+	print "Usage:\n\nfuzzymatch source_table.csv merge_table.csv result.json\n" 
 	exit(-1)
 
 
@@ -32,6 +32,9 @@ def run(f_file, t_file, o_file):
 	t_dialect = csvutil.guess_dialect(t_file)
 	t_reader = ucsv.reader(open(t_file,'r'), dialect=t_dialect)
 	t_header = t_reader.next()
+
+	f_header.append('--row-index--')	
+	t_header.append('--row-index--')
 
 	print 'Source table: %s' % f_file
 	print 'Target table: %s' % t_file
@@ -58,14 +61,20 @@ def run(f_file, t_file, o_file):
 	ignore_score = 0.5
 	
 	t_map = {}
+	t_idx = 1
 	for t_row in t_reader:
+		t_row.append(t_idx)
+		t_idx += 1
 		id = t_row[t_id_col]
 		txt = t_row[t_text_col]
 		if id not in t_map:
 			t_map[id] = []
 		t_map[id].append(txt.strip())
-		
+	
+	f_idx = 1
 	for f_row in f_reader:
+		f_row.append(f_idx)
+		f_idx += 1
 		f_id = f_row[f_id_col]
 		f_text = f_row[f_text_col].strip()
 		if f_id in results['map']:# and results['map'][f_id] is not None:
