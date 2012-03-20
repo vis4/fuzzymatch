@@ -82,10 +82,17 @@ def run(f_file, t_file, o_file):
 			continue
 			
 		matches = []
+		# try to find 100% matched first
 		for t_id in t_map:
 			for t_text in t_map[t_id]:
-				matches.append(Result(t_id, t_text, Levenshtein.ratio(f_text.lower(), t_text.lower())))
-		matches = sorted(matches, key=lambda r: r.score*-1)
+				if t_text.lower() == f_text.lower():
+					matches.append(Result(t_id, t_text, 1.0))
+		
+		if len(matches) == 0:
+			for t_id in t_map:
+				for t_text in t_map[t_id]:
+					matches.append(Result(t_id, t_text, Levenshtein.ratio(f_text.lower(), t_text.lower())))
+			matches = sorted(matches, key=lambda r: r.score*-1)
 		
 		m = None
 		if matches[0].score >= accept_score:
